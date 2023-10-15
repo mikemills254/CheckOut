@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (max-width: 425px) {
+    .body {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        height: 100%;
+    }
+    .leftBody, .rightBody  {
+        width: 100vw;
+        padding-inline: 2rem;
+        margin-top: 0;
+    }
+    .rightBody {
+        /* order: -1; */
+        height: 100vh;
+    }
+    .button {
+        margin-left: 1rem;
+        align-self: center;
+    }
+    .title {
+        font-size: 2rem;
+    }
+    .explanation {
+        font-size: 0.8rem;
+    }
+    /* .mpesa {
+        width: 50;
+    } */
+}
