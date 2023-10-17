@@ -5,6 +5,7 @@ import paypal from './assets/paypal.png'
 import Bag from './assets/Bag.png'
 import { AiOutlineArrowLeft } from 'react-icons/ai'
 import {TailSpin} from 'react-loader-spinner'
+import axios from 'axios'
 
 const Product = ({ image, Description, Price, Quantity}) => {
     return(
@@ -32,23 +33,31 @@ function App() {
     const [ editable, setEditable ] = useState(true)
     const [ empty, setEmpty ] = useState(false)
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setLoading(true);
-        if (!form.email || !form.phone) {
-            setEmpty(true);
+    const url = 'http://localhost:3000/Till'
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(), setLoading(true)
+        let phoneNumber = parseInt(form.phone, 10)
+        const number = "254" + phoneNumber
+        if(!form.email || !form.phone) {
+            setEmpty(true)
             setLoading(false)
-        } else {
-            setEditable(false);
-        setTimeout(() => {
-            console.log(form);
-            setLoading(false);
-            setForm({ phone: '', email: '' })
-        }, 5000);
+        }else {
+            const response = await axios.post(url, {phone: number, amount: 2000})
+            if(response.status === 200){
+                console.log('It has been sent')
+                setTimeout(() => {
+                    setLoading(false)
+                    setForm({phone: '', email: ''})
+                }, 3000)
+            } else if(response.status === 500){
+                setLoading(false)
+                console.log('Iternal Server Error')
+            }
         }
-    };
+    }
     
-    
+
     const Products = [
         {img: Bag, desc: 'Half Moon 35L Water Resistant 15.6 inch Laptop Bag/ Backpack', price: 'ksh. 1200', quanity: '1'},
         {img: Bag, desc: 'Half Moon 35L Water Resistant 15.6 inch Laptop Bag/ Backpack', price: 'ksh. 1200', quanity: '1'}
