@@ -106,7 +106,7 @@ function App() {
                         <label className='label flex flex-col text-[13px] mb-3'>
                             Payment Method
                             <select defaultValue="lipa" className='select p-2.5 outline-none mt-1'>
-                                <option value="lipa">Lipa na Mpesa</option>
+                                <option value="lipa">Lipa na Mpesa(Till)</option>
                                 <option value="paybill">Paybill</option>
                             </select>
                         </label>
