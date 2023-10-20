@@ -33,7 +33,7 @@ function App() {
     const [ editable, setEditable ] = useState(true)
     const [ empty, setEmpty ] = useState(false)
 
-    const url = 'http://localhost:3000/Till'
+    const url = 'http://localhost:3000/stkTill'
 
     const handleSubmit = async (e) => {
         e.preventDefault(), setLoading(true)
@@ -43,7 +43,7 @@ function App() {
             setEmpty(true)
             setLoading(false)
         }else {
-            const response = await axios.post(url, {phone: number, amount: 2000})
+            const response = await axios.post(url, {phone: number, amount: 1})
             if(response.status === 200){
                 console.log('It has been sent')
                 setTimeout(() => {
