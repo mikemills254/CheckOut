@@ -20,6 +20,8 @@ function getTimestamp() {
 
 router.post('/stkTill', createToken, async (req, res) => {
     const phone = req.body.phone;
+    const email = req.body.email;
+    console.log(email)
     const shortCode = "174379";
     const amount = req.body.amount;
     const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -36,7 +38,7 @@ router.post('/stkTill', createToken, async (req, res) => {
         PartyA: phone,
         PartyB: shortCode,
         PhoneNumber: phone,
-        CallBackURL: "https://41a1-154-159-237-11.ngrok-free.app/callBack",
+        CallBackURL: "https://6a71-154-159-237-135.ngrok-free.app/callBack",
         AccountReference: "CashOut",
         TransactionDesc: "Test"
     }
@@ -56,7 +58,9 @@ router.post('/stkTill', createToken, async (req, res) => {
 });
 
 router.post('/callBack', async (req, res) => {
+    console.log('callBack recieved')
     const callBack = req.body;
+    console.log('where is it', callBack.Body)
     if (callBack.Body.stkCallback.CallbackMetadata) {
         const phone = callBack.Body.stkCallback.CallbackMetadata.Item[3].Value;
         const amount = callBack.Body.stkCallback.CallbackMetadata.Item[0].Value;
@@ -82,6 +86,8 @@ router.post('/callBack', async (req, res) => {
         res.status(500).json('not Okay')
     }
 
-})
+});
+
+
 
 export default router
