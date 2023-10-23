@@ -3,6 +3,7 @@ import { createToken } from '../MiddleWare/middleware.js';
 import axios from "axios";
 import { Payment } from "../Utils/models.js";
 import { DataBase } from "../Utils/DbConnect.js";
+import { sendEmail } from '../Utils/Mailer.js'
 
 const router = Router();
 
@@ -21,7 +22,6 @@ function getTimestamp() {
 router.post('/stkTill', createToken, async (req, res) => {
     const phone = req.body.phone;
     const email = req.body.email;
-    console.log(email)
     const shortCode = "174379";
     const amount = req.body.amount;
     const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -38,7 +38,7 @@ router.post('/stkTill', createToken, async (req, res) => {
         PartyA: phone,
         PartyB: shortCode,
         PhoneNumber: phone,
-        CallBackURL: "https://6a71-154-159-237-135.ngrok-free.app/callBack",
+        CallBackURL: `https://d272-154-159-237-135.ngrok-free.app/callBack?email=${email}`,
         AccountReference: "CashOut",
         TransactionDesc: "Test"
     }
@@ -58,9 +58,9 @@ router.post('/stkTill', createToken, async (req, res) => {
 });
 
 router.post('/callBack', async (req, res) => {
-    console.log('callBack recieved')
     const callBack = req.body;
-    console.log('where is it', callBack.Body)
+    const email = req.query.email
+    console.log('from call back:', email)
     if (callBack.Body.stkCallback.CallbackMetadata) {
         const phone = callBack.Body.stkCallback.CallbackMetadata.Item[3].Value;
         const amount = callBack.Body.stkCallback.CallbackMetadata.Item[0].Value;
@@ -71,14 +71,24 @@ router.post('/callBack', async (req, res) => {
 
         // Create a Payment object
         const payment = {
+            email: email,
             number: phone,
             trnx_id: trans_id,
-            amount: amount
+            amount: amount,
         }
         try {
-            await DataBase.InsertData('transactions', 'tillPayments', payment)
+            const results = await DataBase.InsertData('transactions', 'tillPayments', payment)
+            if(results){
+                await sendEmail(email, trans_id, amount)
+                    .then((data) => {
+                        console.log("email sent");
+                    }).catch(error => {
+                        console.log("Error sending email" + error.message)
+                    })
+                return res.status(400).send({ msg: 'Successfully saved to database' })
+            }
         } catch (error) {
-            console.log(error)
+            return res.status(500).send({ msg: 'Failed to save to database' })
         }
         res.status(400).json('ok')
     }else {

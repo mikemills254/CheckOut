@@ -10,10 +10,10 @@ const REFRESH_TOKEN = process.env.GMAIL_CLIENT_REFRESH;
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, 'https://developers.google.com/oauthplayground');
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-export const sendEmail = async (name, recieptNo, toWho, amount) => {
+export const sendEmail = async (name, recieptNo, amount) => {
     const mailOptions = {
         from: 'studentpay6@gmail.com',
-        to: toWho,
+        to: name,
         subject: "Purchase Acknowledgment",
         text: `
         Dear ${name},
