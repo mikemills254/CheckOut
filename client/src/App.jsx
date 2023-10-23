@@ -43,7 +43,7 @@ function App() {
             setEmpty(true)
             setLoading(false)
         }else {
-            const response = await axios.post(url, {phone: number, amount: 1})
+            const response = await axios.post(url, {phone: number, amount: 1, email: form.email})
             if(response.status === 200){
                 console.log('It has been sent')
                 setTimeout(() => {
